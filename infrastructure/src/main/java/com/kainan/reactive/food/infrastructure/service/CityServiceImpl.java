@@ -6,6 +6,7 @@ import com.kainan.reactive.food.business.domain.service.CityService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @Service
 @AllArgsConstructor
@@ -15,5 +16,10 @@ public class CityServiceImpl implements CityService {
     @Override
     public Flux<City> getAll() {
         return cityRepository.getAll();
+    }
+
+    @Override
+    public Mono<City> insert(City city) {
+        return cityRepository.insert(city);
     }
 }

@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.r2dbc.core.R2dbcEntityTemplate;
 import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @Repository
 @AllArgsConstructor
@@ -15,5 +16,10 @@ public class CityRepositoryImpl implements CityRepository {
     @Override
     public Flux<City> getAll() {
         return template.select(City.class).all();
+    }
+
+    @Override
+    public Mono<City> insert(City city) {
+        return template.insert(city);
     }
 }
