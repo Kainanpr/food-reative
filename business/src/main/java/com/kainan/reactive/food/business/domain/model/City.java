@@ -8,5 +8,4 @@ import lombok.Data;
 public class City {
     private Long id;
     private String name;
-    private State state;
 }

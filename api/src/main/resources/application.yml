@@ -4,3 +4,9 @@ spring:
     name: food_reactive
     username: root
     password:
+
+  flyway:
+    url: jdbc:mysql://localhost:3306/food_reactive
+    username: root
+    password:
+    baseline-on-migrate: true

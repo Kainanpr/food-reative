@@ -10,7 +10,7 @@
 
     <properties>
         <java.version>14</java.version>
-        <lombok.version>1.18.20</lombok.version>
+        <flyway.version>7.7.2</flyway.version>
     </properties>
 
     <modules>
