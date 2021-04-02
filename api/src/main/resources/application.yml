@@ -1,12 +1,13 @@
 spring:
   r2dbc:
-    url: r2dbc:mysql://localhost:3306/food_reactive
+    url: r2dbc:mysql://localhost:3306/food_reactive?serverTimezone=UTC
     name: food_reactive
     username: root
     password:
 
-  flyway:
-    url: jdbc:mysql://localhost:3306/food_reactive
-    username: root
-    password:
-    baseline-on-migrate: true
+flyway:
+  url: jdbc:mysql://localhost:3306/food_reactive?serverTimezone=UTC
+  schemas: food_reactive
+  username: root
+  password:
+  baseline-on-migrate: true

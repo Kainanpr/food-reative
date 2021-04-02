@@ -15,12 +15,13 @@ public class FlywayConfig {
         return new Flyway(
                 Flyway.configure()
                         .baselineOnMigrate(Boolean.getBoolean(
-                                env.getRequiredProperty("spring.flyway.baseline-on-migrate"))
+                                env.getRequiredProperty("flyway.baseline-on-migrate"))
                         )
+                        .schemas(env.getRequiredProperty("flyway.schemas"))
                         .dataSource(
-                                env.getRequiredProperty("spring.flyway.url"),
-                                env.getRequiredProperty("spring.flyway.username"),
-                                env.getRequiredProperty("spring.flyway.password")
+                                env.getRequiredProperty("flyway.url"),
+                                env.getRequiredProperty("flyway.username"),
+                                env.getRequiredProperty("flyway.password")
                         )
         );
     }
