@@ -20,32 +20,26 @@ public class CityServiceImpl implements CityService {
     @Override
     public Flux<CityRead> getAll() {
         return cityRepository.getAll()
-                .flatMap((entity) -> Mono.zip(
-                        Mono.just(entity),
-                        stateRepository.getById(entity.getStateId()),
-                        (cityEntity, stateEntity) -> CityRead.builder()
-                                .id(cityEntity.getId())
-                                .name(cityEntity.getName())
-                                .state(StateRead.builder()
-                                        .id(stateEntity.getId())
-                                        .name(stateEntity.getName())
-                                        .build())
-                                .build()));
+                .flatMap(this::zipWithState);
+    }
+
+    private Mono<CityRead> zipWithState(CityEntity entity) {
+        return Mono.zip(
+                Mono.just(entity),
+                stateRepository.getById(entity.getStateId()),
+                (cityEntity, stateEntity) -> CityRead.builder()
+                        .id(cityEntity.getId())
+                        .name(cityEntity.getName())
+                        .state(StateRead.builder()
+                                .id(stateEntity.getId())
+                                .name(stateEntity.getName())
+                                .build())
+                        .build());
     }
 
     @Override
     public Mono<CityRead> insert(CityEntity cityEntity) {
         return cityRepository.insert(cityEntity)
-                .flatMap(entity -> Mono.zip(Mono.just(entity),
-                        stateRepository.getById(entity.getStateId()),
-                        (city, state) ->
-                                CityRead.builder()
-                                        .id(city.getId())
-                                        .name(city.getName())
-                                        .state(StateRead.builder()
-                                                .id(state.getId())
-                                                .name(state.getName())
-                                                .build())
-                                        .build()));
+                .flatMap(this::zipWithState);
     }
 }
