@@ -1,19 +1,20 @@
-package com.kainan.reactive.food.business.domain.model;
+package com.kainan.reactive.food.api.dto.read;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.relational.core.mapping.Table;
+
+import javax.validation.constraints.NotNull;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table("city")
-public class City {
-    @Id
+public class CityReadDTO {
     private Long id;
+    @NotNull
     private String name;
+    @NotNull
+    private StateReadDTO state;
 }

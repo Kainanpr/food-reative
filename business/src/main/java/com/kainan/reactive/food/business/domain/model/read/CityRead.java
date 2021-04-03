@@ -1,18 +1,16 @@
-package com.kainan.reactive.food.api.dto;
+package com.kainan.reactive.food.business.domain.model.read;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotNull;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CityDTO {
+public class CityRead {
     private Long id;
-    @NotNull
     private String name;
+    private StateRead state;
 }

@@ -1,8 +1,10 @@
 package com.kainan.reactive.food.api.controller;
 
-import com.kainan.reactive.food.api.dto.CityDTO;
+import com.kainan.reactive.food.api.dto.read.CityReadDTO;
+import com.kainan.reactive.food.api.dto.write.CityWriteDTO;
 import com.kainan.reactive.food.api.mapper.CityMapper;
-import com.kainan.reactive.food.business.domain.model.City;
+import com.kainan.reactive.food.business.domain.model.entity.CityEntity;
+import com.kainan.reactive.food.business.domain.model.read.CityRead;
 import com.kainan.reactive.food.business.domain.service.CityService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -22,14 +24,21 @@ public class CityController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public Flux<City> getAll() {
+    public Flux<CityRead> getAll() {
         return cityService.getAll();
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Mono<City> insert(@Valid @RequestBody CityDTO cityDTO) {
-        final City city = cityMapper.toCity(cityDTO);
-        return cityService.insert(city);
+    public Mono<CityReadDTO> insert(@Valid @RequestBody Mono<CityWriteDTO> cityWriteDTOMono) {
+        return cityWriteDTOMono.flatMap(cityWriteDTO -> {
+            final CityEntity cityEntity = cityMapper.toCityEntity(cityWriteDTO);
+            return cityService.insert(cityEntity);
+        })
+                .map(cityMapper::toCityReadDTO)
+                .doOnError(ex -> {
+                    ex.printStackTrace();
+                    Mono.error(ex);
+                });
     }
 }
