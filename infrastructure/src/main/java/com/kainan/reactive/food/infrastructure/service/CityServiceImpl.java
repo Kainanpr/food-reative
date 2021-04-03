@@ -8,6 +8,7 @@ import com.kainan.reactive.food.business.domain.service.CityService;
 import com.kainan.reactive.food.infrastructure.mapper.CityMapperInfra;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -32,6 +33,7 @@ public class CityServiceImpl implements CityService {
     }
 
     @Override
+    @Transactional
     public Mono<CityRead> insert(CityEntity cityEntity) {
         return cityRepository.insert(cityEntity)
                 .flatMap(this::zipWithState);
