@@ -4,7 +4,6 @@ import com.kainan.reactive.food.api.dto.read.CityReadDTO;
 import com.kainan.reactive.food.api.dto.write.CityWriteDTO;
 import com.kainan.reactive.food.api.mapper.CityMapperApi;
 import com.kainan.reactive.food.business.domain.model.entity.CityEntity;
-import com.kainan.reactive.food.business.domain.model.read.CityRead;
 import com.kainan.reactive.food.business.domain.service.CityService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -24,8 +23,9 @@ public class CityController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public Flux<CityRead> getAll() {
-        return cityService.getAll();
+    public Flux<CityReadDTO> getAll() {
+        return cityService.getAll()
+                .map(cityMapperApi::toCityReadDTO);
     }
 
     @PostMapping
