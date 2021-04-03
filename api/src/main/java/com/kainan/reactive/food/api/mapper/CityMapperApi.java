@@ -7,7 +7,7 @@ import com.kainan.reactive.food.business.domain.model.read.CityRead;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
-public interface CityMapper {
+public interface CityMapperApi {
     CityEntity toCityEntity(CityWriteDTO cityWriteDTO);
 
     CityReadDTO toCityReadDTO(CityRead cityRead);

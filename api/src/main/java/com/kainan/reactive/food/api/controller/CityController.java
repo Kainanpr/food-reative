@@ -2,7 +2,7 @@ package com.kainan.reactive.food.api.controller;
 
 import com.kainan.reactive.food.api.dto.read.CityReadDTO;
 import com.kainan.reactive.food.api.dto.write.CityWriteDTO;
-import com.kainan.reactive.food.api.mapper.CityMapper;
+import com.kainan.reactive.food.api.mapper.CityMapperApi;
 import com.kainan.reactive.food.business.domain.model.entity.CityEntity;
 import com.kainan.reactive.food.business.domain.model.read.CityRead;
 import com.kainan.reactive.food.business.domain.service.CityService;
@@ -20,7 +20,7 @@ import javax.validation.Valid;
 public class CityController {
 
     private final CityService cityService;
-    private final CityMapper cityMapper;
+    private final CityMapperApi cityMapperApi;
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
@@ -32,10 +32,10 @@ public class CityController {
     @ResponseStatus(HttpStatus.CREATED)
     public Mono<CityReadDTO> insert(@Valid @RequestBody Mono<CityWriteDTO> cityWriteDTOMono) {
         return cityWriteDTOMono.flatMap(cityWriteDTO -> {
-            final CityEntity cityEntity = cityMapper.toCityEntity(cityWriteDTO);
+            final CityEntity cityEntity = cityMapperApi.toCityEntity(cityWriteDTO);
             return cityService.insert(cityEntity);
         })
-                .map(cityMapper::toCityReadDTO)
+                .map(cityMapperApi::toCityReadDTO)
                 .doOnError(ex -> {
                     ex.printStackTrace();
                     Mono.error(ex);
