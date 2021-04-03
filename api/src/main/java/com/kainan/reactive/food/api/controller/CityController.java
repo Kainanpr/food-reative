@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("v1/cities")
 @AllArgsConstructor
@@ -26,7 +28,7 @@ public class CityController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Mono<City> insert(CityDTO cityDTO) {
+    public Mono<City> insert(@Valid @RequestBody CityDTO cityDTO) {
         final City city = cityMapper.toCity(cityDTO);
         return cityService.insert(city);
     }
