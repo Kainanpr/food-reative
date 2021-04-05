@@ -22,20 +22,18 @@ public class CityServiceImpl implements CityService {
     @Override
     public Flux<CityRead> getAll() {
         return cityRepository.getAll()
-                .flatMap(this::zipWithState);
+                .flatMap(this::combineWithState);
     }
 
-    private Mono<CityRead> zipWithState(CityEntity entity) {
-        return Mono.zip(
-                Mono.just(entity),
-                stateRepository.getById(entity.getStateId()),
-                cityMapperInfra::toCityRead);
+    private Mono<CityRead> combineWithState(CityEntity cityEntity) {
+        return stateRepository.getById(cityEntity.getStateId()).map(
+                stateEntity -> cityMapperInfra.toCityRead(cityEntity, stateEntity));
     }
 
     @Override
     @Transactional
     public Mono<CityRead> insert(CityEntity cityEntity) {
         return cityRepository.insert(cityEntity)
-                .flatMap(this::zipWithState);
+                .flatMap(this::combineWithState);
     }
 }
