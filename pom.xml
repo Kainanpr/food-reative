@@ -23,6 +23,7 @@
         <module>api</module>
         <module>business</module>
         <module>infrastructure</module>
+        <module>worker</module>
     </modules>
 
     <dependencies>
