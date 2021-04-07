@@ -17,6 +17,7 @@
         <java.version>14</java.version>
         <flyway.version>7.7.2</flyway.version>
         <mapstruct.version>1.4.2.Final</mapstruct.version>
+        <reactor.kafka.version>1.3.3</reactor.kafka.version>
     </properties>
 
     <modules>
