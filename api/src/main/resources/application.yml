@@ -5,6 +5,16 @@ spring:
     username: root
     password:
 
+  kafka:
+    bootstrap-servers: ${FOOD_KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+
+kafka:
+  topics:
+    city-event:
+      name: ${FOOD_KAFKA_ENV_PREFIX:DEV}-city.event.upserted
+      partitions: ${FOOD_KAFKA_TOPIC_CITY_EVENT_PARTITIONS:1}
+      replicas: ${FOOD_KAFKA_TOPIC_CITY_EVENT_REPLICAS:1}
+
 flyway:
   url: jdbc:mysql://localhost:3306/food_reactive?serverTimezone=UTC
   schemas: food_reactive

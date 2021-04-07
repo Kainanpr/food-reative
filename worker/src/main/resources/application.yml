@@ -1,0 +1,15 @@
+spring:
+  kafka:
+    bootstrap-servers: ${FOOD_KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    consumer:
+      auto-offset-reset: earliest
+      group-id: ${FOOD_KAFKA_ENV_PREFIX:DEV}-city.gourp
+      max-poll-records: ${FOOD_KAFKA_MAX_POLL_RECORDS:500}
+
+kafka:
+  max-poll-interval-ms: ${FOOD_KAFKA_MAX_POLL_INTERVAL_MS:300000}
+  topics:
+    city-event:
+      name: ${FOOD_KAFKA_ENV_PREFIX:DEV}-city.event.upserted
+      partitions: ${FOOD_KAFKA_TOPIC_CITY_EVENT_PARTITIONS:1}
+      replicas: ${FOOD_KAFKA_TOPIC_CITY_EVENT_REPLICAS:1}

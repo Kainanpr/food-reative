@@ -31,10 +31,11 @@ public class CityController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Mono<CityReadDTO> insert(@Valid @RequestBody Mono<CityWriteDTO> cityWriteDTOMono) {
-        return cityWriteDTOMono.flatMap(cityWriteDTO -> {
-            final CityEntity cityEntity = cityMapperApi.toCityEntity(cityWriteDTO);
-            return cityService.insert(cityEntity);
-        })
+        return cityWriteDTOMono
+                .flatMap(cityWriteDTO -> {
+                    final CityEntity cityEntity = cityMapperApi.toCityEntity(cityWriteDTO);
+                    return cityService.insert(cityEntity);
+                })
                 .map(cityMapperApi::toCityReadDTO)
                 .doOnError(ex -> {
                     ex.printStackTrace();
