@@ -37,9 +37,8 @@ public class CityServiceImpl implements CityService {
     public Mono<CityRead> insert(CityEntity cityEntity) {
         return cityRepository.insert(cityEntity)
                 .flatMap(this::combineWithState)
-                .map(cityRead -> {
-                    cityEventProducer.sendEvent(cityRead.getId().toString(), cityMapperInfra.toCityEvent(cityRead));
-                    return cityRead;
-                });
+                .flatMap(cityRead -> cityEventProducer
+                        .sendEvent(cityRead.getId().toString(), cityMapperInfra.toCityEvent(cityRead))
+                        .then(Mono.just(cityRead)));
     }
 }
