@@ -8,9 +8,9 @@ import reactor.kafka.sender.KafkaSender;
 
 @Component
 @Slf4j
-public class CityEventProducer extends CityEventCommonProducer {
-    public CityEventProducer(
-            @Value("${kafka.topics.city-event.name}") String topic,
+public class CityEventRetryProducer extends CityEventCommonProducer {
+    public CityEventRetryProducer(
+            @Value("${kafka.topics.city-event-retry.name}") String topic,
             KafkaSender<String, CityEvent> kafkaSender
     ) {
         super(topic, kafkaSender);

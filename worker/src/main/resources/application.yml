@@ -19,3 +19,14 @@ kafka:
       name: ${FOOD_KAFKA_ENV_PREFIX:DEV}-city.event.upserted
       partitions: ${FOOD_KAFKA_TOPIC_CITY_EVENT_PARTITIONS:1}
       replicas: ${FOOD_KAFKA_TOPIC_CITY_EVENT_REPLICAS:1}
+    city-event-retry:
+      name: ${FOOD_KAFKA_ENV_PREFIX:DEV}-city.event.upserted.RETRY
+      partitions: ${FOOD_KAFKA_TOPIC_CITY_EVENT_RETRY_PARTITIONS:1}
+      replicas: ${FOOD_KAFKA_TOPIC_CITY_EVENT_RETRY_REPLICAS:1}
+
+flyway:
+  url: jdbc:mysql://localhost:3306/food_reactive?serverTimezone=UTC
+  schemas: food_reactive
+  username: root
+  password:
+  baseline-on-migrate: true
