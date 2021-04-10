@@ -1,9 +1,9 @@
 spring:
   r2dbc:
-    url: r2dbc:mysql://localhost:3306/food_reactive?serverTimezone=UTC
-    name: food_reactive
-    username: root
-    password:
+    url: r2dbc:mysql://${FOOD_DB_HOST:localhost}:${FOOD_DB_PORT:3306}/${FOOD_DB_NAME:food_reactive}${FOOD_DB_ADDITIONAL_OPTIONS:?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC}
+    name: ${FOOD_DB_NAME:food_reactive}
+    username: ${FOOD_DB_USERNAME:root}
+    password: ${FOOD_DB_PASSWORD:1234}
 
   kafka:
     bootstrap-servers: ${FOOD_KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
@@ -24,8 +24,14 @@ kafka:
       replicas: ${FOOD_KAFKA_TOPIC_CITY_EVENT_RETRY_REPLICAS:1}
 
 flyway:
-  url: jdbc:mysql://localhost:3306/food_reactive?serverTimezone=UTC
-  schemas: food_reactive
-  username: root
-  password:
+  url: jdbc:mysql://${FOOD_DB_HOST:localhost}:${FOOD_DB_PORT:3306}/${FOOD_DB_NAME:food_reactive}${FOOD_DB_ADDITIONAL_OPTIONS:?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC}
+  schemas: ${FOOD_DB_NAME:food_reactive}
+  username: ${FOOD_DB_USERNAME:root}
+  password: ${FOOD_DB_PASSWORD:1234}
   baseline-on-migrate: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
