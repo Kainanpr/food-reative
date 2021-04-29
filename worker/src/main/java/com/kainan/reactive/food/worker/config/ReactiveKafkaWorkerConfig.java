@@ -2,8 +2,8 @@ package com.kainan.reactive.food.worker.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kainan.reactive.food.infrastructure.kafka.event.CityEvent;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.serialization.StringDeserializer;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
 import org.springframework.context.annotation.Bean;
@@ -15,8 +15,8 @@ import reactor.kafka.receiver.ReceiverOptions;
 import java.util.Collections;
 
 @Configuration
-@Slf4j
 public class ReactiveKafkaWorkerConfig {
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(ReactiveKafkaWorkerConfig.class);
 
     @Bean
     public KafkaReceiver<String, CityEvent> kafkaCityEventReceiver(

@@ -5,7 +5,6 @@ import com.kainan.reactive.food.api.dto.write.CityWriteDTO;
 import com.kainan.reactive.food.api.mapper.CityMapperApi;
 import com.kainan.reactive.food.business.domain.model.entity.CityEntity;
 import com.kainan.reactive.food.business.domain.service.CityService;
-import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
@@ -15,11 +14,14 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping("v1/cities")
-@AllArgsConstructor
 public class CityController {
-
     private final CityService cityService;
     private final CityMapperApi cityMapperApi;
+
+    public CityController(CityService cityService, CityMapperApi cityMapperApi) {
+        this.cityService = cityService;
+        this.cityMapperApi = cityMapperApi;
+    }
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)

@@ -1,13 +1,11 @@
 package com.kainan.reactive.food.infrastructure.config;
 
-import lombok.AllArgsConstructor;
 import org.flywaydb.core.Flyway;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 
 @Configuration
-@AllArgsConstructor
 public class FlywayConfig {
 
     @Bean(initMethod = "migrate")

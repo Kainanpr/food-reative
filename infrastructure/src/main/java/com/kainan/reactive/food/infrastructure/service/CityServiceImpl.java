@@ -7,19 +7,29 @@ import com.kainan.reactive.food.business.domain.repository.StateRepository;
 import com.kainan.reactive.food.business.domain.service.CityService;
 import com.kainan.reactive.food.infrastructure.kafka.publisher.CityEventProducer;
 import com.kainan.reactive.food.infrastructure.mapper.CityMapperInfra;
-import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Service
-@AllArgsConstructor
 public class CityServiceImpl implements CityService {
     private final CityEventProducer cityEventProducer;
     private final CityRepository cityRepository;
     private final StateRepository stateRepository;
     private final CityMapperInfra cityMapperInfra;
+
+    public CityServiceImpl(
+            CityEventProducer cityEventProducer,
+            CityRepository cityRepository,
+            StateRepository stateRepository,
+            CityMapperInfra cityMapperInfra
+    ) {
+        this.cityEventProducer = cityEventProducer;
+        this.cityRepository = cityRepository;
+        this.stateRepository = stateRepository;
+        this.cityMapperInfra = cityMapperInfra;
+    }
 
     @Override
     public Flux<CityRead> getAll() {
@@ -28,7 +38,7 @@ public class CityServiceImpl implements CityService {
     }
 
     private Mono<CityRead> combineWithState(CityEntity cityEntity) {
-        return stateRepository.getById(cityEntity.getStateId()).map(
+        return stateRepository.getById(cityEntity.stateId()).map(
                 stateEntity -> cityMapperInfra.toCityRead(cityEntity, stateEntity));
     }
 
@@ -38,7 +48,7 @@ public class CityServiceImpl implements CityService {
         return cityRepository.insert(cityEntity)
                 .flatMap(this::combineWithState)
                 .flatMap(cityRead -> cityEventProducer
-                        .sendEvent(cityRead.getId().toString(), cityMapperInfra.toCityEvent(cityRead))
+                        .sendEvent(cityRead.id().toString(), cityMapperInfra.toCityEvent(cityRead))
                         .then(Mono.just(cityRead)));
     }
 }

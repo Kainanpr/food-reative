@@ -1,20 +1,21 @@
 package com.kainan.reactive.food.infrastructure.kafka.publisher;
 
 import com.kainan.reactive.food.infrastructure.kafka.event.CityEvent;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import org.slf4j.Logger;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.kafka.sender.KafkaSender;
 import reactor.kafka.sender.SenderRecord;
 import reactor.kafka.sender.SenderResult;
 
-@Slf4j
-abstract public class CityEventCommonProducer {
+public abstract class CityEventCommonProducer {
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(CityEventCommonProducer.class);
+
     private final String topic;
     private final KafkaSender<String, CityEvent> kafkaSender;
 
-    public CityEventCommonProducer(
+    protected CityEventCommonProducer(
             String topic,
             KafkaSender<String, CityEvent> kafkaSender
     ) {
