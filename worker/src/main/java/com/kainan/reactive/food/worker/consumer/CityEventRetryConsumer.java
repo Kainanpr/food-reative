@@ -37,12 +37,10 @@ public class CityEventRetryConsumer {
                 });
         kafkaReceiver
                 .receive()
-                .doOnNext(message -> {
-                    log.info("message consumed - message: {}", message);
-                })
-                .flatMap((message) ->
+                .doOnNext(message -> log.info("message consumed - message: {}", message))
+                .flatMap(message ->
                         cityProcessService.processMessage(message)
-                                .doOnError((error) -> {
+                                .doOnError(error -> {
                                     error.printStackTrace();
                                     log.info("An error occurred while consuming the message from the topic RETRY: {}", message);
                                 })

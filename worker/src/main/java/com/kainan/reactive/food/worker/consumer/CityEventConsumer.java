@@ -37,9 +37,9 @@ public class CityEventConsumer {
                     log.info("message consumed - message: {}", message);
                     message.receiverOffset().acknowledge();
                 })
-                .flatMap((message) ->
+                .flatMap(message ->
                         cityProcessService.processMessage(message)
-                                .onErrorResume((error) -> {
+                                .onErrorResume(error -> {
                                     error.printStackTrace();
                                     log.info("An error occurred while consuming the message: {}", message);
                                     return cityProcessService.sendToRetryTopic(message).then(Mono.just(message));

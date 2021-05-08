@@ -3,7 +3,6 @@ package com.kainan.reactive.food.api.controller;
 import com.kainan.reactive.food.api.dto.read.CityReadDTO;
 import com.kainan.reactive.food.api.dto.write.CityWriteDTO;
 import com.kainan.reactive.food.api.mapper.CityMapperApi;
-import com.kainan.reactive.food.business.domain.model.entity.CityEntity;
 import com.kainan.reactive.food.business.domain.service.CityService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -35,7 +34,7 @@ public class CityController {
     public Mono<CityReadDTO> insert(@Valid @RequestBody Mono<CityWriteDTO> cityWriteDTOMono) {
         return cityWriteDTOMono
                 .flatMap(cityWriteDTO -> {
-                    final CityEntity cityEntity = cityMapperApi.toCityEntity(cityWriteDTO);
+                    final var cityEntity = cityMapperApi.toCityEntity(cityWriteDTO);
                     return cityService.insert(cityEntity);
                 })
                 .map(cityMapperApi::toCityReadDTO)
