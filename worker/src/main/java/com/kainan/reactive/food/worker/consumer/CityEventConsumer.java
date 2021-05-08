@@ -37,13 +37,12 @@ public class CityEventConsumer {
                     log.info("message consumed - message: {}", message);
                     message.receiverOffset().acknowledge();
                 })
-                .flatMap(message ->
-                        cityProcessService.processMessage(message)
-                                .onErrorResume(error -> {
-                                    error.printStackTrace();
-                                    log.info("An error occurred while consuming the message: {}", message);
-                                    return cityProcessService.sendToRetryTopic(message).then(Mono.just(message));
-                                }))
+                .flatMap(message -> cityProcessService.processMessage(message)
+                        .onErrorResume(error -> {
+                            log.error("An error occurred while consuming the message: {}", error.getMessage());
+                            return cityProcessService.sendToRetryTopic(message).then(Mono.just(message));
+                        })
+                )
                 .subscribe();
     }
 }
