@@ -1,34 +1,20 @@
 package com.kainan.reactive.food.worker.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.kainan.reactive.food.infrastructure.kafka.event.CityEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.serialization.StringDeserializer;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
-import reactor.kafka.receiver.KafkaReceiver;
 import reactor.kafka.receiver.ReceiverOptions;
-
-import java.util.Collections;
 
 @Configuration
 @Slf4j
 public class ReactiveKafkaWorkerConfig {
 
     @Bean
-    public KafkaReceiver<String, CityEvent> kafkaCityEventReceiver(
-            @Value("${kafka.topics.city-event.name}") String topic,
-            KafkaProperties properties,
-            ObjectMapper objectMapper
-    ) {
-        return KafkaReceiver.create(createReceiverOptions(topic, properties, objectMapper));
-    }
-
-    private <V> ReceiverOptions<String, V> createReceiverOptions(
-            String topic,
+    public <V> ReceiverOptions<String, V> createReceiverOptions(
             KafkaProperties properties,
             ObjectMapper objectMapper
     ) {
@@ -38,7 +24,6 @@ public class ReactiveKafkaWorkerConfig {
         return ReceiverOptions.<String, V>create(properties.buildConsumerProperties())
                 .withKeyDeserializer(new StringDeserializer())
                 .withValueDeserializer(jsonDeserializer)
-                .addAssignListener(assignments -> log.info(assignments.toString()))
-                .subscription(Collections.singleton(topic));
+                .addAssignListener(assignments -> log.info(assignments.toString()));
     }
 }

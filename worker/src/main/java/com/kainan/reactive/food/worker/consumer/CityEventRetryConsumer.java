@@ -4,23 +4,22 @@ import com.kainan.reactive.food.infrastructure.kafka.event.CityEvent;
 import com.kainan.reactive.food.worker.service.CityProcessService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.event.EventListener;
-import reactor.core.publisher.Mono;
 import reactor.kafka.receiver.KafkaReceiver;
 import reactor.kafka.receiver.ReceiverOptions;
+import reactor.util.retry.Retry;
 
+import java.time.Duration;
 import java.util.Collections;
 
 @Configuration
 @Slf4j
-public class CityEventConsumer {
+public class CityEventRetryConsumer {
     private final CityProcessService cityProcessService;
     private final KafkaReceiver<String, CityEvent> kafkaReceiver;
 
-    public CityEventConsumer(
-            @Value("${kafka.topics.city-event.name}") String topic,
+    public CityEventRetryConsumer(
+            @Value("${kafka.topics.city-event-retry.name}") String topic,
             ReceiverOptions<String, CityEvent> receiverOptions,
             CityProcessService cityProcessService
     ) {
@@ -28,21 +27,26 @@ public class CityEventConsumer {
         this.kafkaReceiver = KafkaReceiver.create(receiverOptions.subscription(Collections.singleton(topic)));
     }
 
-    @EventListener(ApplicationReadyEvent.class)
+    // @EventListener(ApplicationReadyEvent.class)
     public void consumer() {
+        final var backoff = Retry.backoff(5, Duration.ofSeconds(3L))
+                .onRetryExhaustedThrow((v1, v2) -> {
+                    log.info("All attempts failed");
+                    return v2.failure();
+                });
         kafkaReceiver
                 .receive()
                 .doOnNext(message -> {
                     log.info("message consumed - message: {}", message);
-                    message.receiverOffset().acknowledge();
                 })
                 .flatMap((message) ->
                         cityProcessService.processMessage(message)
-                                .onErrorResume((error) -> {
+                                .doOnError((error) -> {
                                     error.printStackTrace();
-                                    log.info("An error occurred while consuming the message: {}", message);
-                                    return cityProcessService.sendToRetryTopic(message).then(Mono.just(message));
-                                }))
+                                    log.info("An error occurred while consuming the message from the topic RETRY: {}", message);
+                                })
+                )
+                .retryWhen(backoff)
                 .subscribe();
     }
 }
