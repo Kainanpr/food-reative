@@ -7,7 +7,6 @@ import reactor.kafka.sender.KafkaSender;
 
 @Component
 public class CityEventDltProducer extends CityEventCommonProducer {
-
     public CityEventDltProducer(
             @Value("${kafka.topics.city-event-dlt.name}") String topic,
             KafkaSender<String, CityEvent> kafkaSender

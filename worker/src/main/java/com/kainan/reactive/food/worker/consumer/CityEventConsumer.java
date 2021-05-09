@@ -1,6 +1,7 @@
 package com.kainan.reactive.food.worker.consumer;
 
 import com.kainan.reactive.food.infrastructure.kafka.event.CityEvent;
+import com.kainan.reactive.food.infrastructure.kafka.publisher.CityEventRetryProducer;
 import com.kainan.reactive.food.worker.service.CityProcessService;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,15 +19,18 @@ public class CityEventConsumer {
     private static final Logger log = org.slf4j.LoggerFactory.getLogger(CityEventConsumer.class);
 
     private final CityProcessService cityProcessService;
+    private final CityEventRetryProducer cityEventRetryProducer;
     private final KafkaReceiver<String, CityEvent> kafkaReceiver;
 
     public CityEventConsumer(
             @Value("${kafka.topics.city-event.name}") String topic,
             ReceiverOptions<String, CityEvent> receiverOptions,
-            CityProcessService cityProcessService
+            CityProcessService cityProcessService,
+            CityEventRetryProducer cityEventRetryProducer
     ) {
-        this.cityProcessService = cityProcessService;
         this.kafkaReceiver = KafkaReceiver.create(receiverOptions.subscription(Collections.singleton(topic)));
+        this.cityProcessService = cityProcessService;
+        this.cityEventRetryProducer = cityEventRetryProducer;
     }
 
     @EventListener(ApplicationReadyEvent.class)
@@ -40,7 +44,7 @@ public class CityEventConsumer {
                 .flatMap(message -> cityProcessService.processMessage(message)
                         .onErrorResume(error -> {
                             log.error("An error occurred while consuming the message: {}", error.getMessage());
-                            return cityProcessService.sendToRetryTopic(message).then(Mono.just(message));
+                            return cityEventRetryProducer.sendEvent(message.key(), message.value()).thenMany(Mono.empty());
                         })
                 )
                 .subscribe();
