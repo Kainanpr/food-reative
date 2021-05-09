@@ -51,9 +51,7 @@ public class CityEventRetryConsumer {
                             log.error("All attempts failed: key - {}, errorMessage - {}", message.key(), ex.getMessage());
                             return cityEventDltProducer.sendEvent(message.key(), message.value()).thenMany(Mono.empty());
                         })
-                        .doOnTerminate(() -> {
-                            message.receiverOffset().acknowledge();
-                        })
+                        .doOnTerminate(() -> message.receiverOffset().acknowledge())
                 )
                 .subscribe();
     }
