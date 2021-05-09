@@ -37,17 +37,20 @@ public class CityEventRetryConsumer {
 
     @EventListener(ApplicationReadyEvent.class)
     public void consumer() {
-        final var backoff = Retry.backoff(3, Duration.ofSeconds(2L));
         kafkaReceiver
                 .receive()
                 .doOnNext(message -> log.info("message consumed - message: {}", message))
-                .flatMap(message -> cityProcessService.processMessage(message)
-                        .doOnError(error -> log.error("An error occurred while consuming the message from the topic RETRY: {}", error.getMessage()))
-                        .retryWhen(backoff)
+                .flatMap(message -> cityProcessService.processMessageInRetry(message)
+                        .doOnError(error -> log.error("An error occurred while processing the message from the topic RETRY: key - {}, errorMessage - {}",
+                                message.key(), error.getMessage())
+                        )
+                        .retryWhen(Retry.backoff(3, Duration.ofSeconds(2L)))
                         .onErrorResume(ex -> {
-                            log.error("All attempts failed: {}", ex.getMessage());
-                            message.receiverOffset().acknowledge();
+                            log.error("All attempts failed: key - {}, errorMessage - {}", message.key(), ex.getMessage());
                             return cityEventDltProducer.sendEvent(message.key(), message.value()).thenMany(Mono.empty());
+                        })
+                        .doOnTerminate(() -> {
+                            message.receiverOffset().acknowledge();
                         })
                 )
                 .subscribe();
