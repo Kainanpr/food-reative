@@ -13,8 +13,8 @@ spring:
       max-poll-records: ${FOOD_KAFKA_MAX_POLL_RECORDS:500}
 
 kafka:
-  default-max-attempts: ${FOOD_KAFKA_DEFAULT_MAX_ATTEMPTS:5}
-  default-back-off-second: ${FOOD_KAFKA_DEFAULT_BACK_OFF_SECOND:1}
+  default-max-attempts: ${FOOD_KAFKA_DEFAULT_MAX_ATTEMPTS:3}
+  default-back-off-second: ${FOOD_KAFKA_DEFAULT_BACK_OFF_SECOND:2}
   max-poll-interval-ms: ${FOOD_KAFKA_MAX_POLL_INTERVAL_MS:300000}
   topics:
     city-event:

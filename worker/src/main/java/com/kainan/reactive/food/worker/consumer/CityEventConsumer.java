@@ -6,15 +6,15 @@ import com.kainan.reactive.food.worker.service.CityProcessService;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.EventListener;
+import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 import reactor.kafka.receiver.KafkaReceiver;
 import reactor.kafka.receiver.ReceiverOptions;
 
 import java.util.Collections;
 
-@Configuration
+@Component
 public class CityEventConsumer {
     private static final Logger log = org.slf4j.LoggerFactory.getLogger(CityEventConsumer.class);
 
