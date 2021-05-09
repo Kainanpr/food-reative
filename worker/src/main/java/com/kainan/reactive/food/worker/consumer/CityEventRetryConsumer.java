@@ -11,9 +11,8 @@ import org.springframework.context.event.EventListener;
 import reactor.core.publisher.Mono;
 import reactor.kafka.receiver.KafkaReceiver;
 import reactor.kafka.receiver.ReceiverOptions;
-import reactor.util.retry.Retry;
+import reactor.util.retry.RetryBackoffSpec;
 
-import java.time.Duration;
 import java.util.Collections;
 
 @Configuration
@@ -22,17 +21,20 @@ public class CityEventRetryConsumer {
 
     private final CityProcessService cityProcessService;
     private final CityEventDltProducer cityEventDltProducer;
+    private final RetryBackoffSpec defaultRetryBackoffSpec;
     private final KafkaReceiver<String, CityEvent> kafkaReceiver;
 
     public CityEventRetryConsumer(
             @Value("${kafka.topics.city-event-retry.name}") String topic,
             ReceiverOptions<String, CityEvent> receiverOptions,
             CityProcessService cityProcessService,
-            CityEventDltProducer cityEventDltProducer
+            CityEventDltProducer cityEventDltProducer,
+            RetryBackoffSpec defaultRetryBackoffSpec
     ) {
         this.kafkaReceiver = KafkaReceiver.create(receiverOptions.subscription(Collections.singleton(topic)));
         this.cityProcessService = cityProcessService;
         this.cityEventDltProducer = cityEventDltProducer;
+        this.defaultRetryBackoffSpec = defaultRetryBackoffSpec;
     }
 
     @EventListener(ApplicationReadyEvent.class)
@@ -44,7 +46,7 @@ public class CityEventRetryConsumer {
                         .doOnError(error -> log.error("An error occurred while processing the message from the topic RETRY: key - {}, errorMessage - {}",
                                 message.key(), error.getMessage())
                         )
-                        .retryWhen(Retry.backoff(3, Duration.ofSeconds(2L)))
+                        .retryWhen(defaultRetryBackoffSpec)
                         .onErrorResume(ex -> {
                             log.error("All attempts failed: key - {}, errorMessage - {}", message.key(), ex.getMessage());
                             return cityEventDltProducer.sendEvent(message.key(), message.value()).thenMany(Mono.empty());
