@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import reactor.kafka.sender.KafkaSender;
 
 @Component
-public class CityEventDltProducer extends CityEventCommonProducer {
+public class CityEventDltProducer extends EventCommonProducer<CityEvent> {
     public CityEventDltProducer(
             @Value("${kafka.topics.city-event-dlt.name}") String topic,
             KafkaSender<String, CityEvent> kafkaSender
