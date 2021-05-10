@@ -41,7 +41,10 @@ public class CityEventRetryConsumer {
     public void consumer() {
         kafkaReceiver
                 .receive()
-                .doOnNext(message -> log.info("message consumed - message: {}", message))
+                .doOnNext(message -> {
+                    log.info("message consumed - message: {}", message);
+                    message.receiverOffset().acknowledge();
+                })
                 .flatMap(message -> cityProcessService.processMessageInRetry(message)
                         .doOnError(error -> log.error("An error occurred while processing the message from the topic RETRY: key - {}, errorMessage - {}",
                                 message.key(), error.getMessage())
@@ -51,7 +54,6 @@ public class CityEventRetryConsumer {
                             log.error("All attempts failed: key - {}, errorMessage - {}", message.key(), ex.getMessage());
                             return cityEventDltProducer.sendEvent(message.key(), message.value()).thenMany(Mono.empty());
                         })
-                        .doOnTerminate(() -> message.receiverOffset().acknowledge())
                 )
                 .subscribe();
     }
