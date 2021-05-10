@@ -24,4 +24,9 @@ public class CityRepositoryImpl implements CityRepository {
     public Mono<CityEntity> insert(CityEntity cityEntity) {
         return template.insert(cityEntity);
     }
+
+    @Override
+    public Mono<CityEntity> update(CityEntity cityEntity) {
+        return template.update(cityEntity);
+    }
 }

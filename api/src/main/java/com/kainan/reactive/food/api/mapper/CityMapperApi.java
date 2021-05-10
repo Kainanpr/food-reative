@@ -6,7 +6,7 @@ import com.kainan.reactive.food.business.domain.model.entity.CityEntity;
 import com.kainan.reactive.food.business.domain.model.read.CityRead;
 
 public interface CityMapperApi {
-    CityEntity toCityEntity(CityWriteDTO cityWriteDTO);
+    CityEntity toCityEntity(Long id, CityWriteDTO cityWriteDTO);
 
     CityReadDTO toCityReadDTO(CityRead cityRead);
 }

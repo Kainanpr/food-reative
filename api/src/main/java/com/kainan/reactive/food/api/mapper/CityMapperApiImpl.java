@@ -11,9 +11,9 @@ import org.springframework.stereotype.Service;
 public class CityMapperApiImpl implements CityMapperApi {
 
     @Override
-    public CityEntity toCityEntity(CityWriteDTO cityWriteDTO) {
+    public CityEntity toCityEntity(Long id, CityWriteDTO cityWriteDTO) {
         return new CityEntity(
-                cityWriteDTO.id(),
+                id,
                 cityWriteDTO.name(),
                 cityWriteDTO.stateId()
         );

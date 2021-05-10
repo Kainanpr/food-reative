@@ -51,4 +51,14 @@ public class CityServiceImpl implements CityService {
                         .sendEvent(cityRead.id().toString(), cityMapperInfra.toCityEvent(cityRead))
                         .then(Mono.just(cityRead)));
     }
+
+    @Override
+    @Transactional
+    public Mono<CityRead> update(CityEntity cityEntity) {
+        return cityRepository.update(cityEntity)
+                .flatMap(this::combineWithState)
+                .flatMap(cityRead -> cityEventProducer
+                        .sendEvent(cityRead.id().toString(), cityMapperInfra.toCityEvent(cityRead))
+                        .then(Mono.just(cityRead)));
+    }
 }

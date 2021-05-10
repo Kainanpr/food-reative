@@ -9,4 +9,6 @@ public interface CityService {
     Flux<CityRead> getAll();
 
     Mono<CityRead> insert(CityEntity cityEntity);
+
+    Mono<CityRead> update(CityEntity cityEntity);
 }

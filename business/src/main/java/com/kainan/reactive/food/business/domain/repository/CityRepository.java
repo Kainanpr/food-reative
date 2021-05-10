@@ -8,4 +8,6 @@ public interface CityRepository {
     Flux<CityEntity> getAll();
 
     Mono<CityEntity> insert(CityEntity cityEntity);
+
+    Mono<CityEntity> update(CityEntity cityEntity);
 }

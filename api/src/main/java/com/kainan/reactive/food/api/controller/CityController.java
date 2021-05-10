@@ -34,8 +34,23 @@ public class CityController {
     public Mono<CityReadDTO> insert(@Valid @RequestBody Mono<CityWriteDTO> cityWriteDTOMono) {
         return cityWriteDTOMono
                 .flatMap(cityWriteDTO -> {
-                    final var cityEntity = cityMapperApi.toCityEntity(cityWriteDTO);
+                    final var cityEntity = cityMapperApi.toCityEntity(null, cityWriteDTO);
                     return cityService.insert(cityEntity);
+                })
+                .map(cityMapperApi::toCityReadDTO)
+                .doOnError(ex -> {
+                    ex.printStackTrace();
+                    Mono.error(ex);
+                });
+    }
+
+    @PutMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public Mono<CityReadDTO> update(@PathVariable("id") Long id, @Valid @RequestBody Mono<CityWriteDTO> cityWriteDTOMono) {
+        return cityWriteDTOMono
+                .flatMap(cityWriteDTO -> {
+                    final var cityEntity = cityMapperApi.toCityEntity(id, cityWriteDTO);
+                    return cityService.update(cityEntity);
                 })
                 .map(cityMapperApi::toCityReadDTO)
                 .doOnError(ex -> {
