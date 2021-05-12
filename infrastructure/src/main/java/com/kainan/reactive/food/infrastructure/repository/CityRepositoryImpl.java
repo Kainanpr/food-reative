@@ -7,12 +7,20 @@ import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import static org.springframework.data.relational.core.query.Criteria.where;
+import static org.springframework.data.relational.core.query.Query.query;
+
 @Repository
 public class CityRepositoryImpl implements CityRepository {
     private final R2dbcEntityTemplate template;
 
     public CityRepositoryImpl(R2dbcEntityTemplate template) {
         this.template = template;
+    }
+
+    @Override
+    public Mono<CityEntity> getById(Long id) {
+        return template.selectOne(query(where("id").is(id)), CityEntity.class);
     }
 
     @Override

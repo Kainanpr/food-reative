@@ -32,14 +32,20 @@ public class CityServiceImpl implements CityService {
     }
 
     @Override
-    public Flux<CityRead> getAll() {
-        return cityRepository.getAll()
+    public Mono<CityRead> getById(Long id) {
+        return cityRepository.getById(id)
                 .flatMap(this::combineWithState);
     }
 
     private Mono<CityRead> combineWithState(CityEntity cityEntity) {
         return stateRepository.getById(cityEntity.stateId()).map(
                 stateEntity -> cityMapperInfra.toCityRead(cityEntity, stateEntity));
+    }
+
+    @Override
+    public Flux<CityRead> getAll() {
+        return cityRepository.getAll()
+                .flatMap(this::combineWithState);
     }
 
     @Override

@@ -6,6 +6,8 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 public interface CityService {
+    Mono<CityRead> getById(Long id);
+
     Flux<CityRead> getAll();
 
     Mono<CityRead> insert(CityEntity cityEntity);
