@@ -45,7 +45,7 @@ public class StateEventRetryConsumer {
                     log.info("message consumed - message: {}", message);
                     message.receiverOffset().acknowledge();
                 })
-                .flatMap(message -> stateProcessorService.processMessage(message)
+                .concatMap(message -> stateProcessorService.processMessage(message)
                         .doOnError(error -> log.error("An error occurred while processing the message from the topic RETRY: key - {}, errorMessage - {}",
                                 message.key(), error.getMessage())
                         )

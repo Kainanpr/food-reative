@@ -45,7 +45,7 @@ public class CityEventRetryConsumer {
                     log.info("message consumed - message: {}", message);
                     message.receiverOffset().acknowledge();
                 })
-                .flatMap(message -> cityProcessorService.processMessage(message)
+                .concatMap(message -> cityProcessorService.processMessage(message)
                         .doOnError(error -> log.error("An error occurred while processing the message from the topic RETRY: key - {}, errorMessage - {}",
                                 message.key(), error.getMessage())
                         )
