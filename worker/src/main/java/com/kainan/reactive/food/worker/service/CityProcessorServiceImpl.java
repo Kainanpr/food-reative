@@ -6,17 +6,11 @@ import reactor.core.publisher.Flux;
 import reactor.kafka.receiver.ReceiverRecord;
 
 @Service
-public class CityProcessServiceImpl implements CityProcessService {
+public class CityProcessorServiceImpl implements CityProcessorService {
 
     // TODO
     @Override
     public Flux<ReceiverRecord<String, CityEvent>> processMessage(ReceiverRecord<String, CityEvent> message) {
-        return Flux.error(new UnsupportedOperationException("WIP"));
-    }
-
-    // TODO
-    @Override
-    public Flux<ReceiverRecord<String, CityEvent>> processMessageInRetry(ReceiverRecord<String, CityEvent> message) {
         return Flux.error(new UnsupportedOperationException("WIP"));
     }
 }

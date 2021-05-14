@@ -5,9 +5,9 @@ import com.kainan.reactive.food.api.dto.read.StateReadDTO;
 import com.kainan.reactive.food.api.dto.write.CityWriteDTO;
 import com.kainan.reactive.food.business.domain.model.entity.CityEntity;
 import com.kainan.reactive.food.business.domain.model.read.CityRead;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
-@Service
+@Component
 public class CityMapperApiImpl implements CityMapperApi {
 
     @Override

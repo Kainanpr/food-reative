@@ -22,6 +22,18 @@ kafka:
       name: ${FOOD_KAFKA_ENV_PREFIX:DEV}-city.event.upserted.DLT
       partitions: ${FOOD_KAFKA_TOPIC_CITY_EVENT_RETRY_PARTITIONS:1}
       replicas: ${FOOD_KAFKA_TOPIC_CITY_EVENT_RETRY_REPLICAS:1}
+    state-event:
+      name: ${FOOD_KAFKA_ENV_PREFIX:DEV}-state.event.upserted
+      partitions: ${FOOD_KAFKA_TOPIC_STATE_EVENT_PARTITIONS:1}
+      replicas: ${FOOD_KAFKA_TOPIC_STATE_EVENT_REPLICAS:1}
+    state-event-retry:
+      name: ${FOOD_KAFKA_ENV_PREFIX:DEV}-state.event.upserted.RETRY
+      partitions: ${FOOD_KAFKA_TOPIC_STATE_EVENT_RETRY_PARTITIONS:1}
+      replicas: ${FOOD_KAFKA_TOPIC_STATE_EVENT_RETRY_REPLICAS:1}
+    state-event-dlt:
+      name: ${FOOD_KAFKA_ENV_PREFIX:DEV}-state.event.upserted.DLT
+      partitions: ${FOOD_KAFKA_TOPIC_STATE_EVENT_RETRY_PARTITIONS:1}
+      replicas: ${FOOD_KAFKA_TOPIC_STATE_EVENT_RETRY_REPLICAS:1}
 
 flyway:
   url: jdbc:mysql://${FOOD_DB_HOST:localhost}:${FOOD_DB_PORT:3306}/${FOOD_DB_NAME:food_reactive}${FOOD_DB_ADDITIONAL_OPTIONS:?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC}

@@ -6,9 +6,9 @@ import com.kainan.reactive.food.business.domain.model.read.CityRead;
 import com.kainan.reactive.food.business.domain.model.read.StateRead;
 import com.kainan.reactive.food.infrastructure.kafka.event.CityEvent;
 import com.kainan.reactive.food.infrastructure.kafka.event.StateEvent;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
-@Service
+@Component
 public class CityMapperInfraImpl implements CityMapperInfra {
 
     @Override
