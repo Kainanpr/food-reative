@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import reactor.kafka.sender.KafkaSender;
 
 @Component
-public class StateEventProducer extends EventCommonProducer<StateEvent> {
+public class StateEventProducer extends CommonProducer<StateEvent> {
     public StateEventProducer(
             @Value("${kafka.topics.state-event.name}") String topic,
             KafkaSender<String, StateEvent> kafkaSender

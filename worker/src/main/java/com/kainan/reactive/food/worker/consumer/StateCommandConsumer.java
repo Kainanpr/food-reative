@@ -1,7 +1,7 @@
 package com.kainan.reactive.food.worker.consumer;
 
-import com.kainan.reactive.food.infrastructure.kafka.event.StateEvent;
-import com.kainan.reactive.food.infrastructure.kafka.publisher.StateEventRetryProducer;
+import com.kainan.reactive.food.infrastructure.kafka.command.StateCommand;
+import com.kainan.reactive.food.infrastructure.kafka.publisher.StateCommandRetryProducer;
 import com.kainan.reactive.food.worker.service.StateProcessorService;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,22 +15,22 @@ import reactor.kafka.receiver.ReceiverOptions;
 import java.util.Collections;
 
 @Component
-public class StateEventConsumer {
-    private static final Logger log = org.slf4j.LoggerFactory.getLogger(StateEventConsumer.class);
+public class StateCommandConsumer {
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(StateCommandConsumer.class);
 
     private final StateProcessorService stateProcessorService;
-    private final StateEventRetryProducer stateEventRetryProducer;
-    private final KafkaReceiver<String, StateEvent> kafkaReceiver;
+    private final StateCommandRetryProducer stateCommandRetryProducer;
+    private final KafkaReceiver<String, StateCommand> kafkaReceiver;
 
-    public StateEventConsumer(
-            @Value("${kafka.topics.state-event.name}") String topic,
-            ReceiverOptions<String, StateEvent> receiverOptions,
+    public StateCommandConsumer(
+            @Value("${kafka.topics.state-command.name}") String topic,
+            ReceiverOptions<String, StateCommand> receiverOptions,
             StateProcessorService stateProcessorService,
-            StateEventRetryProducer stateEventRetryProducer
+            StateCommandRetryProducer stateCommandRetryProducer
     ) {
         this.kafkaReceiver = KafkaReceiver.create(receiverOptions.subscription(Collections.singleton(topic)));
         this.stateProcessorService = stateProcessorService;
-        this.stateEventRetryProducer = stateEventRetryProducer;
+        this.stateCommandRetryProducer = stateCommandRetryProducer;
     }
 
     @EventListener(ApplicationReadyEvent.class)
@@ -44,7 +44,7 @@ public class StateEventConsumer {
                 .flatMap(message -> stateProcessorService.processMessage(message)
                         .onErrorResume(error -> {
                             log.error("An error occurred while processing the message: {}", error.getMessage());
-                            return stateEventRetryProducer.sendEvent(message.key(), message.value()).then(Mono.empty());
+                            return stateCommandRetryProducer.sendMessage(message.key(), message.value()).then(Mono.empty());
                         })
                 )
                 .subscribe();

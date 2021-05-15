@@ -1,7 +1,7 @@
 package com.kainan.reactive.food.worker.consumer;
 
-import com.kainan.reactive.food.infrastructure.kafka.event.StateEvent;
-import com.kainan.reactive.food.infrastructure.kafka.publisher.StateEventDltProducer;
+import com.kainan.reactive.food.infrastructure.kafka.command.StateCommand;
+import com.kainan.reactive.food.infrastructure.kafka.publisher.StateCommandDltProducer;
 import com.kainan.reactive.food.worker.service.StateProcessorService;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,24 +16,24 @@ import reactor.util.retry.RetryBackoffSpec;
 import java.util.Collections;
 
 @Component
-public class StateEventRetryConsumer {
-    private static final Logger log = org.slf4j.LoggerFactory.getLogger(StateEventRetryConsumer.class);
+public class StateCommandRetryConsumer {
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(StateCommandRetryConsumer.class);
 
     private final StateProcessorService stateProcessorService;
-    private final StateEventDltProducer stateEventDltProducer;
+    private final StateCommandDltProducer stateCommandDltProducer;
     private final RetryBackoffSpec defaultRetryBackoffSpec;
-    private final KafkaReceiver<String, StateEvent> kafkaReceiver;
+    private final KafkaReceiver<String, StateCommand> kafkaReceiver;
 
-    public StateEventRetryConsumer(
-            @Value("${kafka.topics.state-event-retry.name}") String topic,
-            ReceiverOptions<String, StateEvent> receiverOptions,
+    public StateCommandRetryConsumer(
+            @Value("${kafka.topics.state-command-retry.name}") String topic,
+            ReceiverOptions<String, StateCommand> receiverOptions,
             StateProcessorService stateProcessorService,
-            StateEventDltProducer stateEventDltProducer,
+            StateCommandDltProducer stateCommandDltProducer,
             RetryBackoffSpec defaultRetryBackoffSpec
     ) {
         this.kafkaReceiver = KafkaReceiver.create(receiverOptions.subscription(Collections.singleton(topic)));
         this.stateProcessorService = stateProcessorService;
-        this.stateEventDltProducer = stateEventDltProducer;
+        this.stateCommandDltProducer = stateCommandDltProducer;
         this.defaultRetryBackoffSpec = defaultRetryBackoffSpec;
     }
 
@@ -52,7 +52,7 @@ public class StateEventRetryConsumer {
                         .retryWhen(defaultRetryBackoffSpec)
                         .onErrorResume(ex -> {
                             log.error("All attempts failed: key - {}, errorMessage - {}", message.key(), ex.getMessage());
-                            return stateEventDltProducer.sendEvent(message.key(), message.value()).then(Mono.empty());
+                            return stateCommandDltProducer.sendMessage(message.key(), message.value()).then(Mono.empty());
                         })
                 )
                 .subscribe();

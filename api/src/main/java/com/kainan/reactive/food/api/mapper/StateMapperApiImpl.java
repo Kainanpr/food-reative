@@ -3,15 +3,15 @@ package com.kainan.reactive.food.api.mapper;
 import com.kainan.reactive.food.api.dto.read.StateReadDTO;
 import com.kainan.reactive.food.api.dto.write.StateWriteDTO;
 import com.kainan.reactive.food.business.domain.model.read.StateRead;
-import com.kainan.reactive.food.infrastructure.kafka.event.StateEvent;
+import com.kainan.reactive.food.infrastructure.kafka.command.StateCommand;
 import org.springframework.stereotype.Component;
 
 @Component
 public class StateMapperApiImpl implements StateMapperApi {
 
     @Override
-    public StateEvent toStateEvent(Long id, StateWriteDTO stateWriteDTO) {
-        return new StateEvent(
+    public StateCommand toStateCommand(Long id, StateWriteDTO stateWriteDTO) {
+        return new StateCommand(
                 id,
                 stateWriteDTO.name()
         );

@@ -4,7 +4,7 @@ import com.kainan.reactive.food.api.dto.read.StateReadDTO;
 import com.kainan.reactive.food.api.dto.write.StateWriteDTO;
 import com.kainan.reactive.food.api.mapper.StateMapperApi;
 import com.kainan.reactive.food.business.domain.service.StateService;
-import com.kainan.reactive.food.infrastructure.kafka.publisher.StateEventProducer;
+import com.kainan.reactive.food.infrastructure.kafka.publisher.StateCommandProducer;
 import org.slf4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -20,16 +20,16 @@ public class StateController {
     private static final Logger log = org.slf4j.LoggerFactory.getLogger(StateController.class);
 
     private final StateService stateService;
-    private final StateEventProducer stateEventProducer;
+    private final StateCommandProducer stateCommandProducer;
     private final StateMapperApi stateMapperApi;
 
     public StateController(
             StateService stateService,
-            StateEventProducer stateEventProducer,
+            StateCommandProducer stateCommandProducer,
             StateMapperApi stateMapperApi
     ) {
         this.stateService = stateService;
-        this.stateEventProducer = stateEventProducer;
+        this.stateCommandProducer = stateCommandProducer;
         this.stateMapperApi = stateMapperApi;
     }
 
@@ -54,8 +54,8 @@ public class StateController {
     public Mono<Void> insert(@Valid @RequestBody Mono<StateWriteDTO> stateWriteDTOMono) {
         return stateWriteDTOMono
                 .flatMap(stateWriteDTO -> {
-                    final var stateEvent = stateMapperApi.toStateEvent(null, stateWriteDTO);
-                    return stateEventProducer.sendEvent(null, stateEvent).then();
+                    final var stateCommand = stateMapperApi.toStateCommand(null, stateWriteDTO);
+                    return stateCommandProducer.sendMessage(null, stateCommand).then();
                 })
                 .doOnError(error -> log.error("An error occurred: {}", error.getMessage()));
     }
@@ -67,8 +67,8 @@ public class StateController {
                 .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "State not found")))
                 .then(stateWriteDTOMono)
                 .flatMap(stateWriteDTO -> {
-                    final var stateEvent = stateMapperApi.toStateEvent(id, stateWriteDTO);
-                    return stateEventProducer.sendEvent(stateEvent.id().toString(), stateEvent).then();
+                    final var stateCommand = stateMapperApi.toStateCommand(id, stateWriteDTO);
+                    return stateCommandProducer.sendMessage(stateCommand.id().toString(), stateCommand).then();
                 })
                 .doOnError(error -> log.error("An error occurred: {}", error.getMessage()));
     }

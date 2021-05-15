@@ -54,7 +54,7 @@ public class CityServiceImpl implements CityService {
         return cityRepository.insert(cityEntity)
                 .flatMap(this::combineWithState)
                 .flatMap(cityRead -> cityEventProducer
-                        .sendEvent(cityRead.id().toString(), cityMapperInfra.toCityEvent(cityRead))
+                        .sendMessage(cityRead.id().toString(), cityMapperInfra.toCityEvent(cityRead))
                         .then(Mono.just(cityRead)));
     }
 
@@ -64,7 +64,7 @@ public class CityServiceImpl implements CityService {
         return cityRepository.update(cityEntity)
                 .flatMap(this::combineWithState)
                 .flatMap(cityRead -> cityEventProducer
-                        .sendEvent(cityRead.id().toString(), cityMapperInfra.toCityEvent(cityRead))
+                        .sendMessage(cityRead.id().toString(), cityMapperInfra.toCityEvent(cityRead))
                         .then(Mono.just(cityRead)));
     }
 }

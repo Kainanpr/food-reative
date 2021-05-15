@@ -8,13 +8,13 @@ import reactor.kafka.sender.KafkaSender;
 import reactor.kafka.sender.SenderRecord;
 import reactor.kafka.sender.SenderResult;
 
-public abstract class EventCommonProducer<V> {
-    private static final Logger log = org.slf4j.LoggerFactory.getLogger(EventCommonProducer.class);
+public abstract class CommonProducer<V> {
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(CommonProducer.class);
 
     private final String topic;
     private final KafkaSender<String, V> kafkaSender;
 
-    protected EventCommonProducer(
+    protected CommonProducer(
             String topic,
             KafkaSender<String, V> kafkaSender
     ) {
@@ -22,7 +22,7 @@ public abstract class EventCommonProducer<V> {
         this.kafkaSender = kafkaSender;
     }
 
-    public Flux<SenderResult<String>> sendEvent(String key, V value) {
+    public Flux<SenderResult<String>> sendMessage(String key, V value) {
         return kafkaSender.send(Mono.fromCallable(() -> {
             log.info("publishing message - topic: {}, key: {}, value: {}", topic, key, value);
             final var producerRecord = new ProducerRecord<>(topic, key, value);

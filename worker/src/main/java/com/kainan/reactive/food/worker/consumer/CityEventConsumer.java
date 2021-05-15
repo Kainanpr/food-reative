@@ -44,7 +44,7 @@ public class CityEventConsumer {
                 .flatMap(message -> cityProcessorService.processMessage(message)
                         .onErrorResume(error -> {
                             log.error("An error occurred while processing the message: {}", error.getMessage());
-                            return cityEventRetryProducer.sendEvent(message.key(), message.value()).thenMany(Mono.empty());
+                            return cityEventRetryProducer.sendMessage(message.key(), message.value()).thenMany(Mono.empty());
                         })
                 )
                 .subscribe();

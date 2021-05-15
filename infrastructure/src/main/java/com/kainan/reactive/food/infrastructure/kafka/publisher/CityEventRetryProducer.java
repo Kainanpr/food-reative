@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import reactor.kafka.sender.KafkaSender;
 
 @Component
-public class CityEventRetryProducer extends EventCommonProducer<CityEvent> {
+public class CityEventRetryProducer extends CommonProducer<CityEvent> {
     public CityEventRetryProducer(
             @Value("${kafka.topics.city-event-retry.name}") String topic,
             KafkaSender<String, CityEvent> kafkaSender

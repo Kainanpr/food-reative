@@ -52,7 +52,7 @@ public class CityEventRetryConsumer {
                         .retryWhen(defaultRetryBackoffSpec)
                         .onErrorResume(ex -> {
                             log.error("All attempts failed: key - {}, errorMessage - {}", message.key(), ex.getMessage());
-                            return cityEventDltProducer.sendEvent(message.key(), message.value()).thenMany(Mono.empty());
+                            return cityEventDltProducer.sendMessage(message.key(), message.value()).thenMany(Mono.empty());
                         })
                 )
                 .subscribe();
