@@ -2,9 +2,9 @@ package com.kainan.reactive.food.worker.consumer;
 
 import com.kainan.reactive.food.infrastructure.kafka.command.StateCommand;
 import com.kainan.reactive.food.infrastructure.kafka.publisher.StateCommandRetryProducer;
+import com.kainan.reactive.food.infrastructure.kafka.util.StateCommandTopicName;
 import com.kainan.reactive.food.worker.service.StateProcessorService;
 import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
@@ -23,12 +23,12 @@ public class StateCommandConsumer {
     private final KafkaReceiver<String, StateCommand> kafkaReceiver;
 
     public StateCommandConsumer(
-            @Value("${kafka.topics.state-command.name}") String topic,
+            StateCommandTopicName topicName,
             ReceiverOptions<String, StateCommand> receiverOptions,
             StateProcessorService stateProcessorService,
             StateCommandRetryProducer stateCommandRetryProducer
     ) {
-        this.kafkaReceiver = KafkaReceiver.create(receiverOptions.subscription(Collections.singleton(topic)));
+        this.kafkaReceiver = KafkaReceiver.create(receiverOptions.subscription(Collections.singleton(topicName.getStateCommandNameTopic())));
         this.stateProcessorService = stateProcessorService;
         this.stateCommandRetryProducer = stateCommandRetryProducer;
     }

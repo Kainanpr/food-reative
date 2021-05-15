@@ -17,34 +17,18 @@ kafka:
   default-back-off-second: ${FOOD_KAFKA_DEFAULT_BACK_OFF_SECOND:2}
   max-poll-interval-ms: ${FOOD_KAFKA_MAX_POLL_INTERVAL_MS:300000}
   topics:
-    city-event:
-      name: ${FOOD_KAFKA_ENV_PREFIX:DEV}-city.event.upserted
-      partitions: ${FOOD_KAFKA_TOPIC_CITY_EVENT_PARTITIONS:1}
-      replicas: ${FOOD_KAFKA_TOPIC_CITY_EVENT_REPLICAS:1}
-    city-event-retry:
-      name: ${FOOD_KAFKA_ENV_PREFIX:DEV}-city.event.upserted.RETRY
-      partitions: ${FOOD_KAFKA_TOPIC_CITY_EVENT_RETRY_PARTITIONS:1}
-      replicas: ${FOOD_KAFKA_TOPIC_CITY_EVENT_RETRY_REPLICAS:1}
-    city-event-dlt:
-      name: ${FOOD_KAFKA_ENV_PREFIX:DEV}-city.event.upserted.DLT
-      partitions: ${FOOD_KAFKA_TOPIC_CITY_EVENT_RETRY_PARTITIONS:1}
-      replicas: ${FOOD_KAFKA_TOPIC_CITY_EVENT_RETRY_REPLICAS:1}
     state-command:
-      name: ${FOOD_KAFKA_ENV_PREFIX:DEV}-state.command.upserted
+      name-prefix: ${FOOD_KAFKA_ENV_PREFIX:DEV}-state.command
       partitions: ${FOOD_KAFKA_TOPIC_STATE_COMMAND_PARTITIONS:1}
       replicas: ${FOOD_KAFKA_TOPIC_STATE_COMMAND_REPLICAS:1}
-    state-command-retry:
-      name: ${FOOD_KAFKA_ENV_PREFIX:DEV}-state.command.upserted.RETRY
-      partitions: ${FOOD_KAFKA_TOPIC_STATE_COMMAND_RETRY_PARTITIONS:1}
-      replicas: ${FOOD_KAFKA_TOPIC_STATE_COMMAND_RETRY_REPLICAS:1}
-    state-command-dlt:
-      name: ${FOOD_KAFKA_ENV_PREFIX:DEV}-state.command.upserted.DLT
-      partitions: ${FOOD_KAFKA_TOPIC_STATE_COMMAND_RETRY_PARTITIONS:1}
-      replicas: ${FOOD_KAFKA_TOPIC_STATE_COMMAND_RETRY_REPLICAS:1}
     state-event:
-      name: ${FOOD_KAFKA_ENV_PREFIX:DEV}-state.event.upserted
+      name-prefix: ${FOOD_KAFKA_ENV_PREFIX:DEV}-state.event
       partitions: ${FOOD_KAFKA_TOPIC_STATE_EVENT_PARTITIONS:1}
       replicas: ${FOOD_KAFKA_TOPIC_STATE_EVENT_REPLICAS:1}
+    city-event:
+      name-prefix: ${FOOD_KAFKA_ENV_PREFIX:DEV}-city.event
+      partitions: ${FOOD_KAFKA_TOPIC_CITY_EVENT_PARTITIONS:1}
+      replicas: ${FOOD_KAFKA_TOPIC_CITY_EVENT_REPLICAS:1}
 
 flyway:
   url: jdbc:mysql://${FOOD_DB_HOST:localhost}:${FOOD_DB_PORT:3306}/${FOOD_DB_NAME:food_reactive}${FOOD_DB_ADDITIONAL_OPTIONS:?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC}

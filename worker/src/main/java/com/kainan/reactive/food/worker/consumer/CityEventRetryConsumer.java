@@ -2,9 +2,9 @@ package com.kainan.reactive.food.worker.consumer;
 
 import com.kainan.reactive.food.infrastructure.kafka.event.CityEvent;
 import com.kainan.reactive.food.infrastructure.kafka.publisher.CityEventDltProducer;
+import com.kainan.reactive.food.infrastructure.kafka.util.CityEventTopicName;
 import com.kainan.reactive.food.worker.service.CityProcessorService;
 import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
@@ -25,13 +25,13 @@ public class CityEventRetryConsumer {
     private final KafkaReceiver<String, CityEvent> kafkaReceiver;
 
     public CityEventRetryConsumer(
-            @Value("${kafka.topics.city-event-retry.name}") String topic,
+            CityEventTopicName topicName,
             ReceiverOptions<String, CityEvent> receiverOptions,
             CityProcessorService cityProcessorService,
             CityEventDltProducer cityEventDltProducer,
             RetryBackoffSpec defaultRetryBackoffSpec
     ) {
-        this.kafkaReceiver = KafkaReceiver.create(receiverOptions.subscription(Collections.singleton(topic)));
+        this.kafkaReceiver = KafkaReceiver.create(receiverOptions.subscription(Collections.singleton(topicName.getCityEventRetryTopicName())));
         this.cityProcessorService = cityProcessorService;
         this.cityEventDltProducer = cityEventDltProducer;
         this.defaultRetryBackoffSpec = defaultRetryBackoffSpec;
