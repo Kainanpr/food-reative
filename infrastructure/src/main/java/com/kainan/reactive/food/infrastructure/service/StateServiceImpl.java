@@ -10,8 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.Objects;
-
 @Service
 public class StateServiceImpl implements StateService {
     private final StateRepository stateRepository;
@@ -54,9 +52,7 @@ public class StateServiceImpl implements StateService {
     @Override
     @Transactional
     public Mono<StateRead> upsert(StateEntity stateEntity) {
-        if (Objects.isNull(stateEntity.id())) {
-            return insert(stateEntity);
-        }
-        return update(stateEntity);
+        return stateRepository.upsert(stateEntity)
+                .map(stateMapperInfra::toStateRead);
     }
 }
