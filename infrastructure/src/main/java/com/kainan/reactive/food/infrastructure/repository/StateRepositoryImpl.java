@@ -16,9 +16,9 @@ public class StateRepositoryImpl extends GenericCrudRepositoryBase<StateEntity, 
 
     @Override
     public Mono<StateEntity> upsert(StateEntity stateEntity) {
-        if (Objects.isNull(stateEntity.id())) {
-            return insert(stateEntity);
-        }
-        return update(stateEntity);
+        return Mono.just(stateEntity)
+                .filter(entity -> !Objects.isNull(entity.id()))
+                .switchIfEmpty(insert(stateEntity))
+                .flatMap(this::update);
     }
 }
