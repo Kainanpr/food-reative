@@ -9,7 +9,7 @@ services:
     ports:
       - "3306:3306"
     volumes:
-      - /docker/mysql:/var/lib/mysql
+      - mysql_volumes:/var/lib/mysql
     networks:
       - mysql-compose-network
 
@@ -47,6 +47,9 @@ services:
       - 9001:9000
     environment:
       KAFKA_BROKERCONNECT: kafka:29092
+
+volumes:
+  mysql_volumes:
 
 networks:
   mysql-compose-network:
