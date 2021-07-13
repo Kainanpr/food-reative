@@ -9,7 +9,7 @@ services:
     ports:
       - "3306:3306"
     volumes:
-      - mysql_volumes:/var/lib/mysql
+      - mysql_data:/var/lib/mysql
     networks:
       - mysql-compose-network
 
@@ -17,6 +17,10 @@ services:
     image: confluentinc/cp-zookeeper:latest
     networks:
       - broker-kafka
+    volumes:
+      - zookeeper_data:/var/lib/zookeeper/data
+      - zookeeper_log:/var/lib/zookeeper/log
+      - zookeeper_secrets:/etc/zookeeper/secrets
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
@@ -29,6 +33,9 @@ services:
       - zookeeper
     ports:
       - 9092:9092
+    volumes:
+      - kafka_data:/var/lib/kafka/data
+      - kafka_secrets:/etc/kafka/secrets
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
@@ -49,7 +56,12 @@ services:
       KAFKA_BROKERCONNECT: kafka:29092
 
 volumes:
-  mysql_volumes:
+  mysql_data:
+  zookeeper_data:
+  zookeeper_log:
+  zookeeper_secrets:
+  kafka_data:
+  kafka_secrets:
 
 networks:
   mysql-compose-network:
