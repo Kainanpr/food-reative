@@ -9,7 +9,7 @@ spring:
     bootstrap-servers: ${FOOD_KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
     consumer:
       auto-offset-reset: earliest
-      group-id: ${FOOD_KAFKA_ENV_PREFIX:DEV}-city.group
+      group-id: ${FOOD_KAFKA_ENV_PREFIX:DEV}-food.group
       max-poll-records: ${FOOD_KAFKA_MAX_POLL_RECORDS:500}
 
 kafka:
